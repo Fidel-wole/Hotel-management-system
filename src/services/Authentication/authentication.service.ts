@@ -4,10 +4,14 @@ import { comparePasswords, jsonwebtoken } from "../../utils/functions";
 export default class AuthenticationService {
   public async registerUser(user: any) {
     try {
+     const existingUser = await User.findOne({ $or: [{ email: user.email }, { username: user.username }] });
+     if (existingUser) {
+       throw new Error("User with this email or username already exists");
+     }
       const newUser = new User(user);
       await newUser.save();
       return newUser;
-    } catch (error) {
+    } catch (error:any) {
       throw error;
     }
   }

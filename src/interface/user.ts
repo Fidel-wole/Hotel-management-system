@@ -1,3 +1,5 @@
+import { Role } from "./role";
+
 export interface User {
   name: string;
   username: string;
@@ -7,4 +9,5 @@ export interface User {
   password: string;
   passwordResetOtp?: string;
   otpExpiry?:Date;
+  role:Role | string;
 }

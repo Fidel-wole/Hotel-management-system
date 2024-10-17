@@ -11,6 +11,7 @@ const userSchema = new Schema<UserDocument>(
     password: { type: String, default: null },
     passwordResetOtp: { type: String },
     otpExpiry:{type:Date},
+    role: { type: Schema.Types.ObjectId, ref: "Role" },
   },
   {
     timestamps: true,

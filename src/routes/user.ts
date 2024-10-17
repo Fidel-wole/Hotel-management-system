@@ -1,7 +1,8 @@
-import { Router } from "express";
-import AuthenticationController from "../controllers/Authentication/authentication.controller";
- 
-const authenticationRouter = Router();
-authenticationRouter.post("/register", new AuthenticationController().registerUser);
-authenticationRouter.post("/login", new AuthenticationController().loginUser);
-export default authenticationRouter;
+import e, { Router } from "express";
+import UserController from "../controllers/User/user.controller";
+import authMiddleWare from "../middlewares/auth.middleware";
+
+const userRouter = Router();
+
+userRouter.get("/user", authMiddleWare, UserController.getUserById);
+export default userRouter;
