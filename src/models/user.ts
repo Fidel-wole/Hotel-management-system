@@ -5,7 +5,7 @@ const userSchema = new Schema<UserDocument>(
   {
     name: { type: String, required: true },
     username: { type: String, unique: true, required: true },
-    email: { type: String, unique: true, required: true },
+    email: { type: String, unique: true, required: true, index: true },
     emailVerificationToken: { type: String },
     isEmailVerified: { type: Boolean, default: false },
     password: { type: String, default: null },

@@ -33,19 +33,39 @@ export default class BookingService {
       throw error;
     }
   }
-  static async getAllBookings() {
+
+  static async getRecentBookings() {
     try {
-      const bookings = await Booking.find({ bookingStatus: "pending" })
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+      const recentBookings = await Booking.find({
+        createdAt: { $gte: threeDaysAgo },
+      })
+        .sort({ createdAt: -1 })
         .populate("userId", "username email name");
 
-      const totalBookings = await Booking.countDocuments({ bookingStatus: "pending" });
+      // Return the bookings
+      return recentBookings;
+    } catch (err: any) {
+      throw new Error("Error fetching recent bookings: " + err.message);
+    }
+  }
+  static async getAllPendingBookings() {
+    try {
+      const bookings = await Booking.find({
+        bookingStatus: "pending",
+      }).populate("userId", "username email name");
+
+      const totalBookings = await Booking.countDocuments({
+        bookingStatus: "pending",
+      });
 
       return {
         totalBookings,
         bookings,
       };
-    } catch (err:any) {
-    
+    } catch (err: any) {
       throw new Error("Error fetching bookings: " + err.message);
     }
   }
@@ -54,9 +74,9 @@ export default class BookingService {
     try {
       // Update the booking status by booking_id
       const updatedBooking = await Booking.findOneAndUpdate(
-        { _id: booking_id }, 
+        { _id: booking_id },
         { bookingStatus: status },
-        { new: true } 
+        { new: true }
       );
 
       // Check if booking was found and updated

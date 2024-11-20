@@ -7,6 +7,7 @@ const bookingRouter = Router();
 bookingRouter.post("/booking", authMiddleWare, BookingController.createBooking);
 bookingRouter.get("/booking", authMiddleWare, BookingController.getBookings);
 bookingRouter.get("/booking/:id", authMiddleWare, BookingController.getBookingById);
-bookingRouter.get("/bookings", authMiddleWare, roleMiddleware(["receptionist", "admin"]), BookingController.getAllBookings)
-bookingRouter.put("/update-booking/:id", authMiddleWare, BookingController.updateBooking)
+bookingRouter.get("/admin/booking/pending", authMiddleWare, roleMiddleware(["receptionist", "admin"]), BookingController.getAllPendingBookings)
+bookingRouter.put("/admin/update-booking/:id", authMiddleWare, BookingController.updateBooking);
+bookingRouter.get("/admin/booking/recent", authMiddleWare, BookingController.getAllRecentBookings)
 export default bookingRouter;

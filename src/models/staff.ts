@@ -6,7 +6,7 @@ interface StaffDocument extends StaffInterface, Document {}
 const staffSchema = new Schema<StaffDocument>(
   {
     name: { type: String, required: true },
-    email: { type: String, unique: true },
+    email: { type: String, unique: true, index: true },
     phoneNumber: { type: String, unique: true },
     role: { type: Schema.Types.ObjectId, ref: "Role" },
     department: { type: String },

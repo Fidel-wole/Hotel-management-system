@@ -43,9 +43,18 @@ export default class BookingController {
   }
 }
 
-static async getAllBookings(req: Request, res: Response): Promise<void> {
+static async getAllPendingBookings(req: Request, res: Response): Promise<void> {
   try {
-    const bookings = await BookingService.getAllBookings();
+    const bookings = await BookingService.getAllPendingBookings();
+    Dispatcher.DispatchSuccessMessage(res, "Bookings retrieved", bookings);
+  } catch (err: any) {
+    Dispatcher.DispatchErrorMessage(res, err.message);
+  }
+}
+
+static async getAllRecentBookings(req: Request, res: Response): Promise<void> {
+  try {
+    const bookings = await BookingService.getRecentBookings();
     Dispatcher.DispatchSuccessMessage(res, "Bookings retrieved", bookings);
   } catch (err: any) {
     Dispatcher.DispatchErrorMessage(res, err.message);

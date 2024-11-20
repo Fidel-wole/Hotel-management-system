@@ -1,3 +1,4 @@
+import Staff from "../../models/staff";
 import User from "../../models/user";
 import { comparePasswords, jsonwebtoken } from "../../utils/functions";
 import RoleService from "../Role/role.service";
@@ -18,51 +19,70 @@ export default class AuthenticationService {
       throw error;
     }
   }
-
   static async createToken(data: { email: string; password?: any }) {
-    const user = await User.findOne({ email: data.email });
+    // Search for the email in both User and Staff collections
+    const [user, staff] = await Promise.all([
+      User.findOne({ email: data.email }).exec(),
+      Staff.findOne({ email: data.email }).exec(),
+    ]);
 
-    if (!user) {
-      throw new Error("User not found");
+    if (!user && !staff) {
+      throw new Error("User or Staff not found");
     }
 
-    if (data.password !== undefined) {
-      const isMatch = await comparePasswords(data.password, user.password);
-
+    const account = user || staff;
+    if (data.password) {
+      const isMatch = await comparePasswords(data.password, account!.password);
       if (!isMatch) {
         throw new Error("Invalid password");
       }
     }
-    const role = await RoleService.findById(user.role);
 
-    if (!role) {
-      throw new Error("Role not found");
+    // Determine the role of the account
+    let roleName: string;
+    if (user) {
+      const role = await RoleService.findById(user.role);
+      if (!role) {
+        throw new Error("Role not found");
+      }
+      roleName = role.name;
+    } else {
+      const role = await RoleService.findById(staff!.role);
+      if (!role) {
+        throw new Error("Role not found");
+      }
+      roleName = role.name;
     }
-    
+
+    // Map the role to a user-friendly string
     let userRole = "";
-    
-    switch (role.name) {
+    switch (roleName) {
       case "admin":
         userRole = "admin";
         break;
-    
       case "user":
         userRole = "user";
         break;
-    
       case "receptionist":
         userRole = "receptionist";
         break;
-    
+      case "staff":
+        userRole = "staff";
+        break;
       default:
         userRole = "Unknown role";
         break;
     }
-    
 
+    const token = jsonwebtoken(
+      account!._id as string,
+      account!.email as string
+    );
 
-    const token = jsonwebtoken(user._id as string, user.email as string);
-
-    return { token, userRole, username: user.username };
+    return {
+      token,
+      userRole,
+      username: account!.name,
+    };
   }
 }

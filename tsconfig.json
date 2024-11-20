@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es6", // Change to es2018 for better compatibility
     "module": "commonjs",
-    "lib": ["es6"], // Change to es2018 for better compatibility
+    "lib": ["es6"], 
     "allowJs": true,
     "outDir": "./build",
     "rootDir": "./src",
