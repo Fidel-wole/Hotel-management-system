@@ -9,5 +9,5 @@ export interface User {
   password: string;
   passwordResetOtp?: string;
   otpExpiry?:Date;
-  role:Role | string;
+  role:Role;
 }

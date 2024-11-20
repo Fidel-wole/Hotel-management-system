@@ -42,4 +42,28 @@ export default class BookingController {
       Dispatcher.DispatchErrorMessage(res, err.message);
   }
 }
+
+static async getAllBookings(req: Request, res: Response): Promise<void> {
+  try {
+    const bookings = await BookingService.getAllBookings();
+    Dispatcher.DispatchSuccessMessage(res, "Bookings retrieved", bookings);
+  } catch (err: any) {
+    Dispatcher.DispatchErrorMessage(res, err.message);
+  }
+}
+
+static async updateBooking(req: Request, res: Response){
+  const {id} = req.params;
+  const {status} = req.body;
+  if (!status){
+    Dispatcher.DispatchErrorMessage(res, "Status is required");
+  }else{
+  try {
+    const updatedBooking = await BookingService.updateBooking(id, status);
+    Dispatcher.DispatchSuccessMessage(res, "Booking status updated", updatedBooking);
+  } catch (err: any) {
+    Dispatcher.DispatchErrorMessage(res, err.message);
+  }
+}
+}
 }

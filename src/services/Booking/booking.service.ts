@@ -33,4 +33,41 @@ export default class BookingService {
       throw error;
     }
   }
+  static async getAllBookings() {
+    try {
+      const bookings = await Booking.find({ bookingStatus: "pending" })
+        .populate("userId", "username email name");
+
+      const totalBookings = await Booking.countDocuments({ bookingStatus: "pending" });
+
+      return {
+        totalBookings,
+        bookings,
+      };
+    } catch (err:any) {
+    
+      throw new Error("Error fetching bookings: " + err.message);
+    }
+  }
+
+  static async updateBooking(booking_id: string, status: string) {
+    try {
+      // Update the booking status by booking_id
+      const updatedBooking = await Booking.findOneAndUpdate(
+        { _id: booking_id }, 
+        { bookingStatus: status },
+        { new: true } 
+      );
+
+      // Check if booking was found and updated
+      if (!updatedBooking) {
+        throw new Error("Booking not found or update failed.");
+      }
+
+      // Return the updated booking
+      return updatedBooking;
+    } catch (err: any) {
+      throw new Error("Error updating booking status: " + err.message);
+    }
+  }
 }
