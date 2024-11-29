@@ -6,7 +6,7 @@ interface BookingDocument extends BookingInterface, Document {}
 const bookingSchema = new Schema<BookingDocument>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    roomId: { type: Number, required: true },
+    roomId: { type: Schema.Types.ObjectId, ref: "Room", required: true },
     checkInDate: { type: Date, required: true },
     checkOutDate: { type: Date, required: true },
     numberOfGuests: { type: Number, required: true },

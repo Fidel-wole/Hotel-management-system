@@ -40,39 +40,49 @@ export default class BookingController {
       return;
     } catch (err: any) {
       Dispatcher.DispatchErrorMessage(res, err.message);
+    }
   }
-}
 
-static async getAllPendingBookings(req: Request, res: Response): Promise<void> {
-  try {
-    const bookings = await BookingService.getAllPendingBookings();
-    Dispatcher.DispatchSuccessMessage(res, "Bookings retrieved", bookings);
-  } catch (err: any) {
-    Dispatcher.DispatchErrorMessage(res, err.message);
+  static async getAllPendingBookings(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    try {
+      const bookings = await BookingService.getAllPendingBookings();
+      Dispatcher.DispatchSuccessMessage(res, "Bookings retrieved", bookings);
+    } catch (err: any) {
+      Dispatcher.DispatchErrorMessage(res, err.message);
+    }
   }
-}
 
-static async getAllRecentBookings(req: Request, res: Response): Promise<void> {
-  try {
-    const bookings = await BookingService.getRecentBookings();
-    Dispatcher.DispatchSuccessMessage(res, "Bookings retrieved", bookings);
-  } catch (err: any) {
-    Dispatcher.DispatchErrorMessage(res, err.message);
+  static async getAllRecentBookings(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    try {
+      const bookings = await BookingService.getRecentBookings();
+      Dispatcher.DispatchSuccessMessage(res, "Bookings retrieved", bookings);
+    } catch (err: any) {
+      Dispatcher.DispatchErrorMessage(res, err.message);
+    }
   }
-}
 
-static async updateBooking(req: Request, res: Response){
-  const {id} = req.params;
-  const {status} = req.body;
-  if (!status){
-    Dispatcher.DispatchErrorMessage(res, "Status is required");
-  }else{
-  try {
-    const updatedBooking = await BookingService.updateBooking(id, status);
-    Dispatcher.DispatchSuccessMessage(res, "Booking status updated", updatedBooking);
-  } catch (err: any) {
-    Dispatcher.DispatchErrorMessage(res, err.message);
+  static async updateBooking(req: Request, res: Response) {
+    const { id } = req.params;
+    const { status } = req.body;
+    if (!status) {
+      Dispatcher.DispatchErrorMessage(res, "Status is required");
+    } else {
+      try {
+        const updatedBooking = await BookingService.updateBooking(id, status);
+        Dispatcher.DispatchSuccessMessage(
+          res,
+          "Booking status updated",
+          updatedBooking
+        );
+      } catch (err: any) {
+        Dispatcher.DispatchErrorMessage(res, err.message);
+      }
+    }
   }
-}
-}
 }

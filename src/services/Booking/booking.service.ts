@@ -1,4 +1,5 @@
 import Booking from "../../models/booking";
+import RoomService from "../Room/room.service";
 
 export default class BookingService {
   static async createBooking(bookingData: any) {
@@ -12,10 +13,16 @@ export default class BookingService {
 
   static async getBookings(userId: string) {
     try {
-      const bookings = await Booking.find({ userId: userId }).populate(
-        "userId",
-        "username email name"
-      );
+      const bookings = await Booking.find({ userId: userId })
+        .populate("userId", "username email name")
+        .populate({
+          path: "roomId",
+          select: "number type category pricePerNight", 
+          populate: {
+            path: "category", 
+            select: "name", 
+          },
+        });
       return bookings;
     } catch (error) {
       throw error;
@@ -24,10 +31,16 @@ export default class BookingService {
 
   static async getBookingById(id: string) {
     try {
-      const booking = await Booking.findById(id).populate(
-        "userId",
-        "username email name"
-      );
+      const booking = await Booking.findById(id)
+        .populate("userId", "username email name")
+        .populate({
+          path: "roomId",
+          select: "number type category pricePerNight", 
+          populate: {
+            path: "category", 
+            select: "name", 
+          },
+        });
       return booking;
     } catch (error) {
       throw error;
@@ -43,8 +56,15 @@ export default class BookingService {
         createdAt: { $gte: threeDaysAgo },
       })
         .sort({ createdAt: -1 })
-        .populate("userId", "username email name");
-
+        .populate("userId", "username email name")
+        .populate({
+          path: "roomId",
+          select: "number type category pricePerNight", 
+          populate: {
+            path: "category", 
+            select: "name", 
+          },
+        });
       // Return the bookings
       return recentBookings;
     } catch (err: any) {
@@ -55,8 +75,16 @@ export default class BookingService {
     try {
       const bookings = await Booking.find({
         bookingStatus: "pending",
-      }).populate("userId", "username email name");
-
+      })
+        .populate("userId", "username email name")
+        .populate({
+          path: "roomId",
+          select: "number type category pricePerNight", 
+          populate: {
+            path: "category", 
+            select: "name", 
+          },
+        });
       const totalBookings = await Booking.countDocuments({
         bookingStatus: "pending",
       });
@@ -83,7 +111,7 @@ export default class BookingService {
       if (!updatedBooking) {
         throw new Error("Booking not found or update failed.");
       }
-
+      await RoomService.updateRoom(updatedBooking.roomId, { isOccupied: true });
       // Return the updated booking
       return updatedBooking;
     } catch (err: any) {
